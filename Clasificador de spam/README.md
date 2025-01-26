@@ -1,135 +1,85 @@
-# Título del Proyecto
+# Spam Classifier with Deep Learning
 
-Nombre autoexplicativo del proyecto, con una breve descripción.
+Este proyecto implementa un clasificador de mensajes spam utilizando aprendizaje profundo (deep learning). A través de la representación TF-IDF de los mensajes y una red neuronal densa, el modelo es capaz de distinguir entre mensajes spam y no spam.
 
 ## Descripción
 
-Una descripción más detallada y técnica del proyecto, incluyendo sus principales características, su propósito y cómo funciona.
+El proyecto utiliza varias etapas para preprocesar los datos y construir un modelo de clasificación:
 
-## Insignias
+- **Preprocesamiento de texto:** Eliminación de stopwords, lematización y tokenización utilizando NLTK.
+- **Representación de datos:** Conversión de los mensajes en vectores TF-IDF.
+- **Construcción del modelo:** Creación de una red neuronal con TensorFlow y Keras para clasificar los mensajes.
+- **Entrenamiento y evaluación:** Uso de datos de entrenamiento y prueba para entrenar y evaluar el rendimiento del modelo.
+- **Predicciones personalizadas:** Clasificación de nuevos mensajes ingresados por el usuario.
 
-Insignias que muestran metadatos como el estado de la compilación, la cobertura de las pruebas, el estado de las dependencias, etc.
+### Prerrequisitos 🗉
 
-## Visuales
+Para ejecutar este proyecto, necesitas instalar las siguientes herramientas:
 
-Capturas de pantalla, videos o GIFs que demuestran lo que hace el proyecto y cómo usarlo.
+- **Sistema Operativo:** Cualquier sistema compatible con Python (Windows, Linux, macOS).
+- **Python:** Versión 3.8 o superior.
+- **Librerías requeridas:**
+  - `nltk`
+  - `pandas`
+  - `scikit-learn`
+  - `tensorflow`
+  - `matplotlib`
+  - `numpy`
 
-## Empezando 🚀
-
-Estas instrucciones te guiarán para obtener una copia de este proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas.
-
-### Prerrequisitos 📋
-
-Lista de software y herramientas, incluyendo versiones, que necesitas para instalar y ejecutar este proyecto:
-
-- Sistema Operativo (por ejemplo, Ubuntu 20.04, Windows 10)
-- Lenguaje de programación (por ejemplo, Python 3.8)
-- Framework (por ejemplo, Django 3.1)
-- Base de datos (por ejemplo, PostgreSQL 12)
-- Otros...
-
-### Instalación 🔧
-
-Una guía paso a paso sobre cómo configurar el entorno de desarrollo e instalar todas las dependencias.
-
+Instala las dependencias con:
 ```bash
-# paso 1
-```
-
-Y así sucesivamente...
-
-```bash
-# paso 2
+pip install -r deps/requirements.txt
 ```
 
 ## Ejecutando las Pruebas ⚙️
 
-Instrucciones y ejemplos para ejecutar el conjunto de pruebas.
+El conjunto de pruebas utiliza datos personalizados para validar la capacidad del modelo. Ejemplo de ejecución:
 
 ```bash
-# proporciona un ejemplo
+# Ejecución del script principal
+python main.py
 ```
 
-### Pruebas de Principio a Fin 🔩
+El script evaluará el modelo y mostrará predicciones de ejemplos predefinidos.
 
-Explica qué cubren estas pruebas, por qué son importantes y cómo interpretar sus resultados.
+## Resumen de etapas o pasos  🔩
 
-### Pruebas de Estilo de Código ⌨️
+1. **Descarga de recursos:**
+   - Descarga de stopwords y lematizadores necesarios de NLTK.
+2. **Carga de datos:**
+   - Importación del archivo CSV con los mensajes y clases.
+3. **Preprocesamiento de datos:**
+   - Limpieza, tokenización y lematización de los mensajes.
+4. **Vectorización:**
+   - Conversión de los mensajes en representaciones numéricas usando TF-IDF.
+5. **Definición del modelo:**
+   - Configuración de una red neuronal densa para clasificación binaria.
+6. **Entrenamiento y validación:**
+   - Entrenamiento del modelo con el conjunto de datos de entrenamiento.
+7. **Evaluación:**
+   - Medición del rendimiento del modelo con el conjunto de prueba.
+8. **Predicciones personalizadas:**
+   - Clasificación de mensajes nuevos proporcionados por el usuario.
 
-Descripción y ejemplos de las pruebas de estilo que estás utilizando.
+## Gráficas de Entrenamiento  🔬
 
-```bash
-# proporciona un ejemplo
+El proyecto incluye gráficas de precisión y pérdida para evaluar el rendimiento del modelo:
+
+- **Precisión de entrenamiento y validación.**
+- **Pérdida de entrenamiento y validación.**
+
+Las gráficas se generan automáticamente y se visualizan al finalizar el entrenamiento.
+
+## Estructura del Proyecto 🌐
+
+```plaintext
+.
+├── data
+│   └── Spam-Classification.csv
+├── deps
+│   └── requeriments.txt
+├── spam_classifier.py
+├── requirements.txt
+└── README.md
 ```
 
-## Despliegue 📦
-
-Instrucciones sobre cómo desplegar esto en un sistema en vivo o ambiente de producción.
-
-## Construido Con 🛠️
-
-Explica qué tecnologías usaste para construir este proyecto. Aquí algunos ejemplos:
-
-- [Ruby](https://www.ruby-lang.org/es/) - El lenguaje utilizado
-- [Ruby on Rails](https://rubyonrails.org) - El framework web utilizado
-- [Ruby gems](https://rubygems.org) - Gestión de dependencias
-- [Postgresql](https://www.postgresql.org) - Sistema de base de datos
-- [Bulma IO](https://bulma.io) - Framework de CSS
-
-## Contribuyendo 🖇️
-
-Las contribuciones son lo que hacen a la comunidad de código abierto un lugar increíble para aprender, inspirar y crear. Cualquier contribución que hagas es muy apreciada. Por favor, lee el [CONTRIBUTING.md](https://gist.github.com/brayandiazc/xxxxxx) para detalles sobre nuestro código de conducta, y el proceso para enviarnos pull requests.
-
-## Wiki 📖
-
-Puedes encontrar mucho más sobre cómo usar este proyecto en nuestra [Wiki](https://github.com/your/project/wiki)
-
-## Soporte
-
-Si tienes algún problema o sugerencia, por favor abre un problema [aquí](https://github.com/your/project/issues).
-
-## Roadmap
-
-Ideas, mejoras planificadas y actualizaciones futuras
-
-para el proyecto actual.
-
-## Versionado 📌
-
-Usamos [Git](https://git-scm.com) para el versionado. Para las versiones disponibles, ve las [etiquetas en este repositorio](https://github.com/your/project/tags).
-
-## Autores ✒️
-
-- **Brayan Diaz C** - _Trabajo inicial_ - [Brayan Diaz C](https://github.com/brayandiazc)
-
-Mira también la lista de [contribuidores](https://github.com/your/project/contributors) que han participado en este proyecto.
-
-## Licencia 📄
-
-Este proyecto está bajo la Licencia XYZ - ve el archivo [LICENSE.md](LICENSE.md) para detalles
-
-## Expresiones de Gratitud 🎁
-
-Estamos agradecidos por las contribuciones de la comunidad a este proyecto. Si encontraste cualquier valor en este proyecto o quieres contribuir, aquí está lo que puedes hacer:
-
-- Comparte este proyecto con otros
-- Invítanos un café ☕
-- Inicia un nuevo problema o contribuye con un PR
-- Muestra tu agradecimiento diciendo gracias en un nuevo problema.
-
----
-
-## Consejos Adicionales 📝
-
-Aquí hay algunos consejos extra para aprovechar al máximo tu README:
-
-- Mantén cada sección lo más concisa posible. Evita la pelusa innecesaria, ya que puede ser abrumadora para el lector.
-- Asegúrate de que tus instrucciones de instalación, pruebas y despliegue sean detalladas y precisas. Si hay pasos adicionales que el lector necesita tomar (como instalar dependencias extra), asegúrate de incluirlos.
-- Los visuales (imágenes, GIFs) son muy útiles para transmitir rápidamente lo que hace tu proyecto y cómo usarlo. Si puedes, incluye capturas de pantalla de tu aplicación en acción o GIFs que demuestren su uso.
-- El tono amigable y acogedor que usas en tu README es excelente. Ayuda a hacer tu proyecto más acogedor para los colaboradores.
-
-Recuerda, un buen README es crucial para hacer que tu proyecto sea atractivo y accesible para otros desarrolladores. ¡Buena suerte con tu proyecto!
-
----
-
-⌨️ con ❤️ por [Brayan Diaz C](https://github.com/brayandiazc) 😊
