@@ -1,9 +1,11 @@
 import pandas as pd
 from sklearn import preprocessing
+from sklearn.metrics import classification_report, confusion_matrix
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
-import tensorflow as tf
+import seaborn as sns
+
 
 # 1 cargamos los datos
 # el archivo con tiene 7 features (caracteristicas) y 3 target (objetivos - root causes)
@@ -65,7 +67,9 @@ print(f"Prueba: {x_test.shape}, {y_test.shape}")
 model = keras.Sequential()
 model.add(keras.layers.Dense(32, input_dim=7, activation='relu'))
 model.add(keras.layers.Dense(32, activation='relu'))
+model.add(keras.layers.Dropout(0.25))
 model.add(keras.layers.Dense(32, activation='relu'))
+model.add(keras.layers.Dropout(0.25))
 model.add(keras.layers.Dense(3, activation='softmax'))
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
@@ -73,18 +77,26 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 model.summary()
 
 # 6 entrenamiento (fit) del modelo
-history = model.fit(x_train, y_train, epochs=50, batch_size=10)
+history = model.fit(x_train, y_train, epochs=50, batch_size=10, validation_split=0.2, verbose=1)
 
 print('\nHistorial de entrenamiento:\n----------------')
 print(history.history.keys())
 
 # evaluación del modelo
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['loss'])
-plt.title('Model accuracy')
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Model Accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(loc='lower right')
+plt.show()
+
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Model Loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='upper right')
+plt.legend(loc='upper right')
 plt.show()
 
 
@@ -110,5 +122,18 @@ x_values = pd.DataFrame({
     'ERROR_1002': [0],
     'ERROR_1003': [0]
     })
-y_pred = np.argmax(model.predict(x_values), axis=1)
-print(etiqueta_encoder.inverse_transform(y_pred))
+# y_pred = np.argmax(model.predict(x_values), axis=1) # si lo hago de una no funciona classification_report
+# print(etiqueta_encoder.inverse_transform(y_pred))
+predicciones = model.predict(x_test)
+y_pred = np.argmax(predicciones, axis=1)
+
+print("\nReporte de clasificación:\n")
+print(classification_report(y_test, y_pred, target_names=root_causes))
+
+conf_matrix = confusion_matrix(y_test, y_pred)
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=root_causes, yticklabels=root_causes)
+plt.title('Matriz de confusión')
+plt.ylabel('Etiqueta verdadera')
+plt.xlabel('Etiqueta predicha')
+plt.show()
+
