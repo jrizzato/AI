@@ -1,167 +1,132 @@
-import pandas as pd
-import os
+import pandas as pd # Importamos la librería pandas para trabajar con datos en formato de tabla
 import tensorflow as tf, keras
+# tensorflow y keras: librerías para construir y entrenar modelos de aprendizaje profundo
 import numpy as np
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+# scikitlearn: librería para realizar tareas de aprendizaje automático
 import matplotlib.pyplot as plt
 
-# cargamos la informacion de los datos y la revisamos (preprocesamiento)
+# 1. Cargar los datos
+# Leemos el archivo CSV que contiene las características y las especies de las flores de iris
 iris_data = pd.read_csv('data/iris.csv')
 
-print("\nDatos con tu etiqueta:\n------------------------------------")
+print("\nDatos originales:\n------------------------------------")
 print(iris_data.head(10))
 
-# Usar un codificador de etiquetas para convertir cadenas a valores numéricos
-# para la variable objetivo
+# 2. Codificación de las etiquetas
+# Convertimos las etiquetas de las especies en valores numéricos para su uso en el modelo
+label_encoder = preprocessing.LabelEncoder()
+iris_data['Species'] = label_encoder.fit_transform(iris_data['Species'])
 
-# from sklearn import preprocessing
-label_encoder = preprocessing.LabelEncoder() # sirve para convertir las etiquetas de las clases en valores numéricos
-iris_data['Species'] = label_encoder.fit_transform(iris_data['Species']) # convierte las etiquetas de las clases en valores numéricos
-
-print("\n\nDatos despues de la codificacion de la etiqueta:\n------------------------------------")
+print("\nDatos después de codificar las etiquetas:\n------------------------------------")
 print(iris_data.head(10))
 
-# mostrar que numero se le asignó a cada especie
-print("\n\nMapeo de la etiqueta y su numero:\n------------------------------------")
+# Mostramos el mapeo entre las especies y los números asignados
+print("\nMapeo de etiquetas y sus valores numéricos:\n------------------------------------")
 for i, item in enumerate(label_encoder.classes_):
     print(item, '-->', i)
 
-# dividir los datos en caracteristicas y etiquetas
+# 3. Separar características (X) y etiquetas (y)
 x = iris_data[['Sepal.Length', 'Sepal.Width', 'Petal.Length', 'Petal.Width']]
 y = iris_data['Species']
 
-# estandarizacion de los datos
+# 4. Estandarizar las características
+# Escalamos las características para que tengan media 0 y varianza 1
 scaler = StandardScaler().fit(x)
 x = scaler.transform(x)
 
-# StandardScaler es una clase de la biblioteca sklearn que se utiliza para estandarizar características 
-# eliminando la media y escalando a la varianza unitaria.
-# El método .fit(X_data) calcula la media y la desviación estándar de X_data y las almacena en el objeto scaler.
-
-# Convertir la variable objetivo a un array de codificación one-hot
+# Convertir las etiquetas en una representación one-hot para el modelo
+# Esto asegura que cada etiqueta se represente como un vector binario
+# Ejemplo: 1 --> [0, 1, 0]
 y = tf.keras.utils.to_categorical(y, num_classes=3)
 
-print("\nFeatures after scaling :\n------------------------------------")
-print(x[:5,:])
-print("\nTarget after one-hot-encoding :\n------------------------------------")
-print(y[:5,:])
+print("\nCaracterísticas escaladas:\n------------------------------------")
+print(x[:5, :])
+print("\nEtiquetas en formato one-hot:\n------------------------------------")
+print(y[:5, :])
 
-# dividir los datos en sets de entrenamiento y prueba
+# 5. Dividir datos en entrenamiento y prueba
+# Usamos un 10% de los datos para pruebas y el resto para entrenamiento
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=42)
 
-print("\nTrain Test Dimensions:\n------------------------------------")
-print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+print("\nDimensiones de los conjuntos de datos:\n------------------------------------")
+print(f"Entrenamiento: {x_train.shape}, {y_train.shape}")
+print(f"Prueba: {x_test.shape}, {y_test.shape}")
 
+# 6. Construir el modelo de red neuronal
+NB_CLASSES = 3  # Número de clases en el conjunto de datos (especies)
 
-# construir el modelo
-
-# numero de clases en la variable objetivo
-NB_CLASSES=3
-
-# creamos un modelo secuencial
+# Creamos un modelo secuencial de Keras
 model = keras.models.Sequential()
 
-# agregamos una capa densa con 128 neuronas (perceptrones) y función de activación relu
-model.add(keras.layers.Dense(128,
-                            input_shape=(4,), # 4 variables de entrada (features)
-                            name='hidden_layer1',
-                            activation='relu')) # función de activación relu (rectified linear unit)
+# Agregamos capas densas al modelo
+model.add(keras.layers.Dense(128, input_shape=(4,), activation='relu', name='hidden_layer1'))
+model.add(keras.layers.Dense(128, activation='relu', name='hidden_layer2'))
+model.add(keras.layers.Dense(NB_CLASSES, activation='softmax', name='output_layer'))
 
-# agregamos una capa densa con 128 neuronas y función de activación relu
-model.add(keras.layers.Dense(128,
-                            name='hidden_layer2',
-                            activation='relu')) # función de activación relu
+# Compilamos el modelo especificando la función de pérdida, optimizador y métrica
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-# agregamos una capa densa con 3 neuronas (una para cada clase) y función de activación softmax
-model.add(keras.layers.Dense(NB_CLASSES,
-                            name='output_layer',
-                            activation='softmax')) # función de activación softmax
-
-# compilamos el modelo
-model.compile(loss='categorical_crossentropy', # función de pérdida
-              optimizer='adam', # optimizador
-              metrics=['accuracy']) # métrica de evaluación
-
+# Mostramos un resumen del modelo
 model.summary()
 
-
-# entrenamos el modelo
-
-# ponemos el verbose en 1 para que muestre el progreso del entrenamiento
-VERBOSE = 1
-
-# configuramos los hyperparámetros
-
-# numero de lotes
+# 7. Entrenar el modelo
 BATCH_SIZE = 16
-# numero de epochs
 EPOCHS = 10
-# configuramos el tamaño de validación al 20%
 VALIDATION_SPLIT = 0.2
 
-# entrenamos el modelo
-# Ajustar el modelo. Esto realizará todo el ciclo de entrenamiento, incluyendo
-# propagación hacia adelante (forward propagation), 
-# cálculo de pérdida (loss computation), 
-# propagación hacia atrás (backward propagation)
-# y descenso de gradiente (gradient descent).
-# Ejecutar para los tamaños de lote y epoch especificados
-# Realizar validación después de cada epoch
+# Entrenamos el modelo con los datos de entrenamiento
 history = model.fit(x_train, y_train,
                     batch_size=BATCH_SIZE,
                     epochs=EPOCHS,
-                    verbose=VERBOSE,
+                    verbose=1,
                     validation_split=VALIDATION_SPLIT)
 
+# Mostramos la precisión durante el entrenamiento
 print("\nPrecisión durante el entrenamiento:\n------------------------------------")
-pd.DataFrame(history.history)["accuracy"].plot(figsize=(8, 5))
-plt.title("Accuracy improvements with Epoch")
+pd.DataFrame(history.history)['accuracy'].plot(figsize=(8, 5))
+plt.title("Mejoras en la precisión con las épocas")
 plt.show()
 
-print("\nEvaluacion contra el dataset:\n------------------------------------")
-model.evaluate(x_test,y_test)
-# evaluate devuelve la pérdida y las métricas de evaluación del modelo en el conjunto de datos de prueba
+# 8. Evaluar el modelo
+# Evaluamos el modelo con los datos de prueba para obtener la pérdida y la precisión
+print("\nEvaluación del modelo con los datos de prueba:\n------------------------------------")
+model.evaluate(x_test, y_test)
 
-# guardar el modelo
+# 9. Guardar y cargar el modelo
+# Guardamos el modelo en un archivo
 model.save('models/iris_model.keras')
-# cargar un modelo
+
+# Cargamos el modelo guardado
 model = keras.models.load_model('models/iris_model.keras')
-# recompilar el modelo con las métricas deseadas
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-# mostrar resumen del modelo cargado
 model.summary()
 
-
-# hacer predicciones con el deep learning model
-# datos de la predicción
-valores_predecir = [[6.6, 3.0, 4.4, 1.4]] # valores de las características, son las medidas características de una flor de iris
-# escalado de los datos
+# 10. Realizar predicciones
+# Realizamos una predicción para una nueva muestra de datos
+valores_predecir = [[6.6, 3.0, 4.4, 1.4]]
 entrada_escalada = scaler.transform(valores_predecir)
-# predicción en bruto
 prediccion_bruto = model.predict(entrada_escalada)
-# predicción en bruto
+
 print("\nPredicción en bruto:\n------------------------------------")
 print(prediccion_bruto)
-# prediccion de la clase
-prediccion_clase = np.argmax(prediccion_bruto)
-print(type(prediccion_clase))
-# argmax devuelve el índice del valor máximo a lo largo de un eje
-# el resultado de argmax es la clase predicha, por ejemplo prediccion en bruto devuelve
-# [[0.001, 0.9, 0.099]] entonces el argmax de eso es 1
-# la clase 1 es la clase predicha, que este caso es versicolor
-# clase predicha
-print("\nClase predicha:\n------------------------------------")
-print(label_encoder.classes_[prediccion_clase]) # muestra la clase predicha - versicolor
 
-prediccion_clase = np.int64(2)
-print("\nClase predicha:\n------------------------------------")
-print(label_encoder.classes_[prediccion_clase]) # muestra la clase predicha - virginica
+# Determinamos la clase predicha
+def obtener_clase_predicha(prediccion_bruto):
+    indice = np.argmax(prediccion_bruto)
+    return label_encoder.classes_[indice]
 
-# hacer predicciones con el deep learning model
+clase_predicha = obtener_clase_predicha(prediccion_bruto)
+print("\nClase predicha:\n------------------------------------")
+print(clase_predicha)
+
+# Otra predicción
 valores_predecir = [[1.6, 3.0, 2.4, 3.4]]
 entrada_escalada = scaler.transform(valores_predecir)
-prediccion_bruto = model.predict(entrada_escalada) # <--- aca se hace la predicción
-prediccion_clase = np.argmax(prediccion_bruto)
-print(label_encoder.classes_[prediccion_clase])
+prediccion_bruto = model.predict(entrada_escalada)
+clase_predicha = obtener_clase_predicha(prediccion_bruto)
+
+print("\nOtra predicción:\n------------------------------------")
+print(clase_predicha)
