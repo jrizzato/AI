@@ -61,8 +61,8 @@ El modelo es una red neuronal creada con Keras, que incluye:
 - **Matriz de confusión:**
   - Representación visual del desempeño del modelo en los datos de prueba.
 
-![Gráfico de Precisión y Pérdida](ruta/a/grafico_accuracy_loss.png)
-![Matriz de Confusión](ruta/a/matriz_confusion.png)
+![Gráfico de Precisión y Pérdida](accuracy_loss.png)
+![Matriz de Confusión](matriz_confusion.png)
 
 ---
 Si tienes preguntas o sugerencias, por favor crea un issue o envía un pull request. ¡Gracias por contribuir!
