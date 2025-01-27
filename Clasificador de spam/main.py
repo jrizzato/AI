@@ -93,6 +93,7 @@ N_HIDDEN = 32  # Número de neuronas en las capas ocultas
 model = tf.keras.models.Sequential()
 
 model.add(keras.layers.Dense(N_HIDDEN, input_shape=(x_train.shape[1],), name='Hidden-Layer-1', activation='relu'))
+# x_train es la matriz TF-IDF de los mensajes. x_train.shape[0] es el número de mensajes y x_train.shape[1] es el número de características en la matriz TF-IDF
 model.add(keras.layers.Dense(N_HIDDEN, name='Hidden-Layer-2', activation='relu'))
 model.add(keras.layers.Dense(NB_CLASSES, name='Output-Layer', activation='softmax')) # softmax es una función de activación que convierte las salidas en probabilidades
 
