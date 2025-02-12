@@ -124,6 +124,9 @@ x_values = pd.DataFrame({
 y_pred = model.predict(x_values)
 print(y_pred)
 
+mse = model.evaluate(x_test, y_test)
+print(f'Mean Squared Error on test set: {mse}')
+
 
 
 
