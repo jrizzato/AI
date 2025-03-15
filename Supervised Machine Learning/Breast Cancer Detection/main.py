@@ -225,3 +225,29 @@ print('X_test shape:', X_test.shape, '\n')
 print('X_train shape:', X_train.shape, '\n')
 print('y_test shape:', y_test.shape, '\n')
 print('y_train shape:', y_train.shape, '\n')
+
+
+# Entrenamiento del modelo (model training)
+
+# KNN (K-Nearest Neighbors)
+
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier()
+# ¿que es el clasificador K-Nearest Neighbors?
+# - es un algoritmo de aprendizaje supervisado
+# - es un algoritmo de clasificación
+
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {'n_neighbors': [5, 7, 11, 15, 3],
+              'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
+              'leaf_size': [10, 30, 50, 100],
+              }
+
+grid_search = GridSearchCV(knn, param_grid=param_grid)
+# el primer argumento de GridSearchCV es el algoritmo que queremos optimizar
+# el segundo argumento de GridSearchCV es el espacio de búsqueda
+# entrenamos la grilla de búsqueda
+grid_search.fit(X_train, y_train)
+
+
