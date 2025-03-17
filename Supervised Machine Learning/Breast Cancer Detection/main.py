@@ -101,37 +101,37 @@ data_vis = pd.concat([targets,data_n_2.iloc[:,0:10]],axis=1)
 # - en este caso, estamos convirtiendo el dataset en un formato que se puede visualizar con seaborn
 # - el formato que se puede visualizar con seaborn es un formato largo
 # - el formato largo es un formato en el que cada fila tiene una sola observación
-data_vis = pd.melt(data_vis,id_vars="diagnosis",
-                    var_name="features",
-                    value_name='value')
-plt.figure(figsize=(10,10))
-tic = time.time()
-sns.swarmplot(x="features", y="value", hue="diagnosis", data=data_vis)
-# sns.stripplot(x="features", y="value", hue="diagnosis", data=data_vis) # otra opcion
-plt.xticks(rotation=90)
-plt.show()
+# data_vis = pd.melt(data_vis,id_vars="diagnosis",
+#                     var_name="features",
+#                     value_name='value')
+# plt.figure(figsize=(10,10))
+# tic = time.time()
+# sns.swarmplot(x="features", y="value", hue="diagnosis", data=data_vis)
+# # sns.stripplot(x="features", y="value", hue="diagnosis", data=data_vis) # otra opcion
+# plt.xticks(rotation=90)
+# plt.show()
 
 #Getting all features from 10th to 20th
-data_vis = pd.concat([targets,data_n_2.iloc[:,10:20]],axis=1)
-data_vis = pd.melt(data_vis,id_vars="diagnosis",
-                    var_name="features",
-                    value_name='value')
-plt.figure(figsize=(10,10))
-tic = time.time()
-sns.swarmplot(x="features", y="value", hue="diagnosis", data=data_vis)
-plt.xticks(rotation=90)
-plt.show()
+# data_vis = pd.concat([targets,data_n_2.iloc[:,10:20]],axis=1)
+# data_vis = pd.melt(data_vis,id_vars="diagnosis",
+#                     var_name="features",
+#                     value_name='value')
+# plt.figure(figsize=(10,10))
+# tic = time.time()
+# sns.swarmplot(x="features", y="value", hue="diagnosis", data=data_vis)
+# plt.xticks(rotation=90)
+# plt.show()
 
 #Getting the last 10 features in the dataset
-data_vis = pd.concat([targets,data_n_2.iloc[:,20:30]],axis=1)
-data_vis = pd.melt(data_vis,id_vars="diagnosis",
-                    var_name="features",
-                    value_name='value')
-plt.figure(figsize=(10,10))
-tic = time.time()
-sns.swarmplot(x="features", y="value", hue="diagnosis", data=data_vis)
-plt.xticks(rotation=90)
-plt.show()
+# data_vis = pd.concat([targets,data_n_2.iloc[:,20:30]],axis=1)
+# data_vis = pd.melt(data_vis,id_vars="diagnosis",
+#                     var_name="features",
+#                     value_name='value')
+# plt.figure(figsize=(10,10))
+# tic = time.time()
+# sns.swarmplot(x="features", y="value", hue="diagnosis", data=data_vis)
+# plt.xticks(rotation=90)
+# plt.show()
 
 
 # Preprocesamiento de datos del dataset (dataset preprocessing)
@@ -250,4 +250,55 @@ grid_search = GridSearchCV(knn, param_grid=param_grid)
 # entrenamos la grilla de búsqueda
 grid_search.fit(X_train, y_train)
 
+# obtener los mejores paramatros
+print(grid_search.best_params_)
+print(grid_search.best_estimator_)
+
+# definimos el knn con los mejores parametros
+knn = KNeighborsClassifier(algorithm='auto', leaf_size=10, n_neighbors=5)
+# ¿porque definimos el knn con los mejores parametros?
+# - para que el knn tenga el mejor rendimiento
+
+# entrenamos el knn
+knn.fit(X_train, y_train)
+
+
+# Evaluacion del modelo
+
+# Accuracy (exactitud)
+from sklearn.metrics import accuracy_score
+y_pred = knn.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print('accuracy:', accuracy)
+# ¿que es la exactitud?
+# - es el porcentaje de predicciones correctas
+# - es una medida de rendimiento del modelo
+# - es una medida de la calidad del modelo
+
+# matriz de confusion (confusion matrix)
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+print('confusion matrix:\n', cm)
+sns.heatmap(cm, annot=True, fmt='d')
+plt.show()
+# ¿que es la matriz de confusion?
+# - es una tabla que muestra las predicciones correctas e incorrectas
+# - es una tabla que muestra las predicciones positivas y negativas
+# - es una tabla que muestra los verdaderos positivos, falsos positivos, verdaderos negativos y falsos negativos
+# verdaderos positivos (TP): predicciones positivas correctas. Por ejemplo, tumores malignos que se predicen como malignos
+# falsos positivos (FP): predicciones positivas incorrectas. Por ejemplo, tumores benignos que se predicen como malignos
+# verdaderos negativos (TN): predicciones negativas correctas. Por ejemplo, tumores benignos que se predicen como benignos
+# falsos negativos (FN): predicciones negativas incorrectas. Por ejemplo, tumores malignos que se predicen como benignos
+
+# Precision (precision)
+from sklearn.metrics import precision_score
+precision = precision_score(y_test, y_pred)
+print('precision:', precision)
+# ¿que es la precision?
+# - es el porcentaje de predicciones positivas correctas
+
+# Recall (sensibilidad)
+from sklearn.metrics import recall_score
+recall = recall_score(y_test, y_pred)
+print('recall:', recall)
 
