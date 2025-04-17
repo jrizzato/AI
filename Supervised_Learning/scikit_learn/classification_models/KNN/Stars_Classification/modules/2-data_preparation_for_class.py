@@ -5,7 +5,16 @@ dataset = pd.read_csv("./classification_models/KNN/Stars_Classification/data/sta
 
 # Separar características (X) y la variable objetivo (y)
 X = dataset.drop(['Star type','Star category','Star color','Spectral Class'], axis=1) # esto es todo el dataset menos las columnas 'Star type', 'Star category', 'Star color' y 'Spectral Class'
-y = dataset['Star type']
+y = dataset['Spectral Class']
+
+from sklearn.preprocessing import LabelEncoder
+# Codificar la columna 'Spectral Class'
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(y)
+# Ver la codificación
+print("Codificación de 'Spectral Class':")
+for clase, valor in zip(label_encoder.classes_, range(len(label_encoder.classes_))):
+    print(f"{clase}: {valor}")
 
 # Estandarizar las características (opcional pero recomendado para KNN, SVM o regresion logistica)
 from sklearn.preprocessing import StandardScaler
@@ -42,5 +51,6 @@ joblib.dump(X_test, './classification_models/KNN/Stars_Classification/data/X_tes
 joblib.dump(y_train, './classification_models/KNN/Stars_Classification/data/y_train.pkl')
 joblib.dump(y_test, './classification_models/KNN/Stars_Classification/data/y_test.pkl')
 joblib.dump(scaler, './classification_models/KNN/Stars_Classification/data/scaler.pkl')
+joblib.dump(label_encoder, './classification_models/KNN/Stars_Classification/data/label_encoder.pkl')
 
 print('\n', "Variables guardadas exitosamente.")

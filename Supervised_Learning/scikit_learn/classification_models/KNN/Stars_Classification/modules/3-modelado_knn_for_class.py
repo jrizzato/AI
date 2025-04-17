@@ -6,6 +6,7 @@ X_test = joblib.load('./classification_models/KNN/Stars_Classification/data/X_te
 y_train = joblib.load('./classification_models/KNN/Stars_Classification/data/y_train.pkl')
 y_test = joblib.load('./classification_models/KNN/Stars_Classification/data/y_test.pkl')
 scaler = joblib.load('./classification_models/KNN/Stars_Classification/data/scaler.pkl')
+label_encoder = joblib.load('./classification_models/KNN/Stars_Classification/data/label_encoder.pkl')
 
 print("Variables cargadas exitosamente.")
 
@@ -44,31 +45,26 @@ plt.legend()
 plt.grid()
 plt.show()
 
-# Mapear Star type a Star category
-type_to_category = {
-    0: "Brown Dwarf",
-    1: "Red Dwarf",
-    2: "White Dwarf",
-    3: "Main Sequence",
-    4: "Supergiant",
-    5: "Hypergiant"
-}
-
-# creo una estrella de prueba para predecir su tipo
+# creo una estrella de prueba para predecir su clase espectral
 # estrella = [Temperature (K), Luminosity (L/Lo), Radius (R/Ro) y Absolute magnitude (Mv)]
 estrella = [[5000, 0.1, 0.5, 10]]
+# Crear un DataFrame para la estrella con los mismos nombres de columnas que X
 estrella_df = pd.DataFrame(estrella, columns=['Temperature (K)', 'Luminosity (L/Lo)', 'Radius (R/Ro)', 'Absolute magnitude (Mv)'])
 # datos estandarizados de la estrella de prueba
 # Aplicar la estandarización
-x_estrella_scaled = scaler.transform(estrella)
+x_estrella_scaled = scaler.transform(estrella_df)
 print("Datos de la estrella antes de la estandarización:")
 print(pd.DataFrame(estrella, columns=['Temperature (K)', 'Luminosity (L/Lo)', 'Radius (R/Ro)', 'Absolute magnitude (Mv)']).head(), '\n')
 print("Datos de la estrella después de la estandarización:")
 print(pd.DataFrame(x_estrella_scaled, columns=['Temperature (K)', 'Luminosity (L/Lo)', 'Radius (R/Ro)', 'Absolute magnitude (Mv)']).head(), '\n')
 y_estrella_scaled = knn.predict(x_estrella_scaled)
-print(f"Predicción de tipo para la estrella de prueba: {y_estrella_scaled[0]} ({type_to_category[y_estrella_scaled[0]]})")
+print(f"Predicción de tipo para la estrella de prueba: {y_estrella_scaled[0]} ")
+
+clase_espectral = label_encoder.inverse_transform([y_estrella_scaled[0]])
+print(f"Clase espectral predicha: {clase_espectral[0]}")
 
 # # Hacer predicciones
+# el X_train y X_test ya están estandarizados
 y_pred = knn.predict(X_test)
 
 # # Evaluar el modelo
