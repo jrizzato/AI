@@ -61,4 +61,4 @@ joblib.dump(y_train, './classification_models/KNN/Wine_Quality/data/y_train.pkl'
 joblib.dump(y_test, './classification_models/KNN/Wine_Quality/data/y_test.pkl')
 joblib.dump(scaler, './classification_models/KNN/Wine_Quality/data/scaler.pkl')
 
-print("Variables guardadas exitosamente.")
+print('\n', "Variables guardadas exitosamente.")
